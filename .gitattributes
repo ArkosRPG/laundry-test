@@ -1,0 +1,151 @@
+# Macro for Unity YAML-based asset files.
+[attr]unityyaml text merge=unityyamlmerge diff eol=lf
+
+# Macro for all binary files that should use LFS
+[attr]lfs -text filter=lfs diff=lfs merge=lfs
+
+# Macro for all binary files that should not use LFS
+[attr]bin -text !filter !diff !merge
+
+# Macro for all code files
+[attr]code text eol=lf
+
+
+## Unity ##
+
+# Code
+*.cginc code
+*.cs code diff=csharp
+*.shader code
+
+# Unity Text Assets
+*.meta unityyaml
+*.prefab unityyaml
+*.unity unityyaml
+
+*.anim unityyaml
+*.asmdef unityyaml
+*.asset unityyaml
+*.brush unityyaml
+*.controller unityyaml
+*.flare unityyaml
+*.giparams unityyaml
+*.guiskin unityyaml
+*.fontsettings unityyaml
+*.mask unityyaml
+*.mat unityyaml
+*.mixer unityyaml
+*.overrideController unityyaml
+*.physicsMaterial2D unityyaml
+*.physicMaterial unityyaml
+*.playable unityyaml
+*.preset unityyaml
+*.renderTexture unityyaml
+*.shadervariants unityyaml
+*.spriteatlas unityyaml
+*.terrainlayer unityyaml
+
+
+## git-lfs ##
+
+# Unity Binary Assets
+*.cubemap lfs
+*.unitypackage lfs
+
+# Image
+*.png lfs
+*.psd lfs
+*.ai lfs
+*.jpg lfs
+*.jpeg lfs
+*.apng lfs
+*.atsc lfs
+*.gif lfs
+*.bmp lfs
+*.exr lfs
+*.tga lfs
+*.tiff lfs
+*.tif lfs
+*.iff lfs
+*.pict lfs
+*.dds lfs
+*.xcf lfs
+*.leo lfs
+*.kra lfs
+*.kpp lfs
+*.clip lfs
+*.webm lfs
+*.webp lfs
+*.svg lfs
+*.svgz lfs
+*.afphoto lfs
+*.afdesign lfs
+
+# Audio
+*.ogg lfs
+*.mp3 lfs
+*.wav lfs
+*.aiff lfs
+*.aif lfs
+*.mod lfs
+*.it lfs
+*.s3m lfs
+*.xm lfs
+
+# Fonts
+*.ttf lfs
+*.otf lfs
+
+# 3D Object
+*.fbx lfs
+*.blend lfs
+*.blender lfs
+*.obj lfs
+*.max lfs
+*.dae lfs
+*.mb lfs
+*.ma lfs
+*.3dm lfs
+*.3ds lfs
+*.dfx lfs
+*.c4d lfs
+*.collada lfs
+*.lwo lfs
+*.lwo2 lfs
+*.abc lfs
+*.bin lfs
+*.glb lfs
+
+# Video
+*.mp4 lfs
+*.mov lfs
+*.avi lfs
+*.asf lfs
+*.mpg lfs
+*.mpeg lfs
+*.flv lfs
+*.ogv lfs
+*.wmv lfs
+
+# Packaging
+*.zip lfs
+*.7z lfs
+*.gz lfs
+*.rar lfs
+*.tar lfs
+
+# Libraries
+*.dll lfs
+*.a lfs
+*.so lfs
+*.pdb lfs
+*.mdb lfs
+
+# Executables
+*.exe lfs
+
+# ETC
+*.pdf lfs
+*.rns lfs
+*.reason lfs
+*.lxo lfs
