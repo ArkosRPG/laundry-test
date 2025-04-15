@@ -66,31 +66,8 @@ public class PlayerController : MonoBehaviour
 
         var tf = transform;
         var desiredDistance = Time.deltaTime * speed;
-        for (var i = 0; i < _hitsCount; i++)
-        {
-            var point1 = tf.position + Vector3.up * _capsule.radius;
-            var point2 = point1 + Vector3.up * _capsule.height;
-
-            var desiredLocalMove = input * desiredDistance;
-            var desiredMove = tf.forward * desiredLocalMove.z + tf.right * desiredLocalMove.x;
-            var desiredDirection = desiredMove.normalized;
-
-            // TODO: non-alloc
-            if (!Physics.CapsuleCast(point1, point2, _capsule.radius, desiredDirection, out var hit, desiredDistance, _wallsMask))
-            {
-                tf.position += desiredMove;
-                break;
-            }
-
-            var moveDistance = hit.distance;
-            if (moveDistance < MIN_DISTANCE)
-                break;
-
-            moveDistance -= MIN_DISTANCE;
-            var move = desiredDirection * moveDistance;
-            tf.position += move;
-
-            input = Vector3.Cross(hit.normal, desiredMove.normalized).normalized;
-        }
+        var desiredLocalMove = input * desiredDistance;
+        var desiredMove = tf.forward * desiredLocalMove.z + tf.right * desiredLocalMove.x;
+        tf.position += desiredMove;
     }
 }
