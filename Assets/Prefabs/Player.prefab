@@ -47,9 +47,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _camera: {fileID: 2633403205554459352}
+  _cameraXMaxUp: 30
+  _cameraXMaxDown: 60
   _speed: 5
-  _cameraXMin: -60
-  _cameraXMax: 30
+  _sprint: 12
+  _capsule: {fileID: 9044661765674336978}
+  _wallsMask:
+    serializedVersion: 2
+    m_Bits: 640
+  _hitsCount: 2
 --- !u!1 &6591775950725202511
 GameObject:
   m_ObjectHideFlags: 0

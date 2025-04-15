@@ -10,13 +10,13 @@ GameObject:
   m_Component:
   - component: {fileID: 5131196271653454304}
   - component: {fileID: 4593489004965268089}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: StackCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5131196271653454304
 Transform:
   m_ObjectHideFlags: 0
@@ -65,7 +65,7 @@ GameObject:
   - component: {fileID: 2559059217438982388}
   - component: {fileID: -2089499265428769156}
   - component: {fileID: 7997977962876274134}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: ItemBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -127,7 +127,7 @@ GameObject:
   - component: {fileID: 42368575173745641}
   - component: {fileID: 7639900917825710838}
   - component: {fileID: 1343025657456947862}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -236,13 +236,13 @@ GameObject:
   - component: {fileID: 1982451966224767300}
   - component: {fileID: 8917454856904968796}
   - component: {fileID: 1534401953852072358}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: StackModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1982451966224767300
 Transform:
   m_ObjectHideFlags: 0
