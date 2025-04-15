@@ -3,14 +3,15 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Transform _camera;
-    [SerializeField] private int _speed = 5;
-    [SerializeField] private int _cameraXMin = -30;
-    [SerializeField] private int _cameraXMax = +60;
+    [SerializeField] private int       _speed      =   5;
+    [SerializeField] private int       _sprint     =  12;
+    [SerializeField] private int       _cameraXMin = -30;
+    [SerializeField] private int       _cameraXMax = +60;
 
 
     private void Update()
     {
-        if (Time.time < 1f)
+        if (Time.time < 0.1f)
             return;
 
         CameraControls();
@@ -45,7 +46,8 @@ public class PlayerController : MonoBehaviour
             if (Input.GetKey(KeyCode.D))
                 move.x++;
 
-            move *= Time.deltaTime * _speed;
+            var speed = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) ? _sprint : _speed;
+            move *= Time.deltaTime * speed;
 
             var tf = transform;
             tf.position += tf.forward * move.z + tf.right * move.x;

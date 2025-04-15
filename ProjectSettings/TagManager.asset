@@ -11,10 +11,10 @@ TagManager:
   - 
   - Water
   - UI
-  - Walls
-  - Items
-  - Stack
-  - 
+  - Player
+  - Item
+  - Floor
+  - Wall
   - 
   - 
   - 
