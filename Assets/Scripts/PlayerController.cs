@@ -14,16 +14,20 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int _speed = 5;
     [Min(1)]
     [SerializeField] private int _sprint = 12;
-    [SerializeField] private CapsuleCollider _capsule;
-    [SerializeField] private LayerMask _wallsMask;
-    [Min(1)]
-    [SerializeField] private int _hitsCount = 2;
 
     [Header("Items")]
     [Min(1)]
     [SerializeField] private float _pickDistance = 2f;
     [SerializeField] private LayerMask _itemsMask;
 
+
+    private PlaceableItem _currentItem;
+
+
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+    }
 
     private void Update()
     {
@@ -39,23 +43,24 @@ public class PlayerController : MonoBehaviour
 
     private void CameraControls()
     {
-        var mouse = Input.mousePositionDelta;
+        // TODO: use new input system or Rewired etc
+        var mousePosition = Input.mousePositionDelta;
 
-        var player = transform.localEulerAngles;
-        var camera = _camera.localEulerAngles;
-        if (camera.x > 180f)
-            camera.x -= 360f;
+        var playerEuler = transform.localEulerAngles;
+        var cameraEuler = _camera.localEulerAngles;
+        if (cameraEuler.x > 180f)
+            cameraEuler.x -= 360f;
 
-        player.y += mouse.x;
-        camera.x = Mathf.Clamp(camera.x - mouse.y, -_cameraXMaxUp, _cameraXMaxDown);
+        playerEuler.y += mousePosition.x;
+        cameraEuler.x = Mathf.Clamp(cameraEuler.x - mousePosition.y, -_cameraXMaxUp, _cameraXMaxDown);
 
-        transform.localEulerAngles = player;
-        _camera.localEulerAngles = camera;
+        transform.localEulerAngles = playerEuler;
+        _camera.localEulerAngles = cameraEuler;
     }
 
-    // TODO: use new input system or Rewired etc
     private void Movement()
     {
+        // TODO: use new input system or Rewired etc
         var input = Vector3.zero;
         if (Input.GetKey(KeyCode.W))
             input.z++;
@@ -74,19 +79,42 @@ public class PlayerController : MonoBehaviour
         tf.position += desiredMove;
     }
 
-    private bool HandleItems()
+    private void HandleItems()
+    {
+        if (Input.GetMouseButton(0))
+        {
+            if (_currentItem)
+            {
+                _currentItem.Unpick();
+                _currentItem = null;
+            }
+
+            var item = DetectItem();
+            if (!item)
+                return;
+
+            _currentItem = item;
+            _currentItem.Pick();
+        }
+        else
+        if (Input.GetMouseButton(1))
+        {
+            if (_currentItem)
+            {
+                _currentItem.Unpick();
+                _currentItem = null;
+            }
+        }
+    }
+
+    private PlaceableItem DetectItem()
     {
         var tf = _camera.transform;
 
         // TODO: non-alloc
         if (!Physics.Raycast(tf.position, tf.forward, out var hit, _pickDistance, _itemsMask))
-            return false;
+            return null;
 
-        var item = hit.transform.parent.GetComponent<PlaceableItem>();
-        if (!item)
-            return false;
-
-        item.Pick();
-        return false;
+        return hit.transform.parent.GetComponent<PlaceableItem>();
     }
 }

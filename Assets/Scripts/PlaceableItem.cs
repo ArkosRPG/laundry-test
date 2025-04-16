@@ -28,8 +28,10 @@ public class PlaceableItem : MonoBehaviour
         switch (_state)
         {
             case State.Undefined:
+
             case State.Placed:
                 _renderer.material = _pickedMaterial;
+                _state = State.Picked;
                 return true;
 
             case State.Picked:
@@ -45,8 +47,10 @@ public class PlaceableItem : MonoBehaviour
         switch (_state)
         {
             case State.Undefined:
+
             case State.Picked:
                 _renderer.material = _commonMaterial;
+                _state = State.Placed;
                 return true;
 
             case State.Placed:
