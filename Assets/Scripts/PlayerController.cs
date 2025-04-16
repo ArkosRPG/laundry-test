@@ -2,9 +2,6 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private const float MIN_DISTANCE = 0.1f;
-
-
     [Header(nameof(CameraControls))]
     [SerializeField] private Transform _camera;
     [Range(0, 90)]
@@ -22,6 +19,11 @@ public class PlayerController : MonoBehaviour
     [Min(1)]
     [SerializeField] private int _hitsCount = 2;
 
+    [Header("Items")]
+    [Min(1)]
+    [SerializeField] private float _pickDistance = 2f;
+    [SerializeField] private LayerMask _itemsMask;
+
 
     private void Update()
     {
@@ -31,6 +33,7 @@ public class PlayerController : MonoBehaviour
 
         CameraControls();
         Movement();
+        HandleItems();
     }
 
 
@@ -69,5 +72,21 @@ public class PlayerController : MonoBehaviour
         var desiredLocalMove = input * desiredDistance;
         var desiredMove = tf.forward * desiredLocalMove.z + tf.right * desiredLocalMove.x;
         tf.position += desiredMove;
+    }
+
+    private bool HandleItems()
+    {
+        var tf = _camera.transform;
+
+        // TODO: non-alloc
+        if (!Physics.Raycast(tf.position, tf.forward, out var hit, _pickDistance, _itemsMask))
+            return false;
+
+        var item = hit.transform.parent.GetComponent<PlaceableItem>();
+        if (!item)
+            return false;
+
+        item.Pick();
+        return false;
     }
 }

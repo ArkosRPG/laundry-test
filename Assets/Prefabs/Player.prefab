@@ -57,6 +57,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 640
   _hitsCount: 2
+  _pickDistance: 2
+  _itemsMask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!195 &2389877006327781415
 NavMeshAgent:
   m_ObjectHideFlags: 0
