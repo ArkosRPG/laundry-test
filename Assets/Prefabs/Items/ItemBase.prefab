@@ -100,10 +100,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87e2301912919cf479abfe52a24d13be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _collider: {fileID: 1343025657456947862}
   _renderer: {fileID: 7639900917825710838}
   _commonMaterial: {fileID: 2100000, guid: c0335229da05e164aa50c0022704c64d, type: 2}
   _pickedMaterial: {fileID: 2100000, guid: 750a028d58656c54eb70c057b7244cac, type: 2}
   _stack: {fileID: 7997977962876274134}
+  _model: {fileID: 6229476808555184764}
 --- !u!114 &7997977962876274134
 MonoBehaviour:
   m_ObjectHideFlags: 0

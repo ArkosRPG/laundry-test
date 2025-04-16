@@ -35,18 +35,19 @@ public class PlayerController : MonoBehaviour
         if (Time.time < 0.1f)
             return;
 
-        CameraControls();
-        Movement();
-        HandleItems();
+        var tf = transform;
+        CameraControls(tf);
+        Movement(tf);
+        HandleItems(tf);
     }
 
 
-    private void CameraControls()
+    private void CameraControls(Transform tf)
     {
         // TODO: use new input system or Rewired etc
         var mousePosition = Input.mousePositionDelta;
 
-        var playerEuler = transform.localEulerAngles;
+        var playerEuler = tf.localEulerAngles;
         var cameraEuler = _camera.localEulerAngles;
         if (cameraEuler.x > 180f)
             cameraEuler.x -= 360f;
@@ -54,11 +55,11 @@ public class PlayerController : MonoBehaviour
         playerEuler.y += mousePosition.x;
         cameraEuler.x = Mathf.Clamp(cameraEuler.x - mousePosition.y, -_cameraXMaxUp, _cameraXMaxDown);
 
-        transform.localEulerAngles = playerEuler;
+        tf.localEulerAngles = playerEuler;
         _camera.localEulerAngles = cameraEuler;
     }
 
-    private void Movement()
+    private void Movement(Transform tf)
     {
         // TODO: use new input system or Rewired etc
         var input = Vector3.zero;
@@ -72,45 +73,58 @@ public class PlayerController : MonoBehaviour
             input.x++;
         var speed = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) ? _sprint : _speed;
 
-        var tf = transform;
         var desiredDistance = Time.deltaTime * speed;
         var desiredLocalMove = input * desiredDistance;
         var desiredMove = tf.forward * desiredLocalMove.z + tf.right * desiredLocalMove.x;
         tf.position += desiredMove;
     }
 
-    private void HandleItems()
+    private void HandleItems(Transform tf)
     {
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0))
+        {
+            var item = DetectItem(tf);
+            if (item)
+            {
+                if (_currentItem)
+                {
+                    _currentItem.Unpick();
+                    _currentItem = null;
+                }
+
+                _currentItem = item;
+                _currentItem.TryPick();
+            }
+            else
+            {
+                if (_currentItem)
+                {
+                    _currentItem.TryPlace();
+                    _currentItem = null;
+                }
+            }
+        }
+        else
+        if (Input.GetMouseButtonDown(1))
         {
             if (_currentItem)
             {
                 _currentItem.Unpick();
                 _currentItem = null;
             }
-
-            var item = DetectItem();
-            if (!item)
-                return;
-
-            _currentItem = item;
-            _currentItem.Pick();
         }
         else
-        if (Input.GetMouseButton(1))
         {
             if (_currentItem)
             {
-                _currentItem.Unpick();
-                _currentItem = null;
+                var itemScale = _currentItem.ModelScale;
+                _currentItem.MoveTo(tf.position + tf.forward * (1 + itemScale.z / 2f), tf.rotation);
             }
         }
     }
 
-    private PlaceableItem DetectItem()
+    private PlaceableItem DetectItem(Transform tf)
     {
-        var tf = _camera.transform;
-
         // TODO: non-alloc
         if (!Physics.Raycast(tf.position, tf.forward, out var hit, _pickDistance, _itemsMask))
             return null;
