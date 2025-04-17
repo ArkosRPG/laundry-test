@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -19,6 +20,9 @@ public class PlayerController : MonoBehaviour
     [Min(1)]
     [SerializeField] private float _pickDistance = 5f;
     [SerializeField] private LayerMask _itemsMask;
+    [SerializeField] private float _placeDistance = 10f;
+    [SerializeField] private LayerMask _floorMask;
+    [SerializeField] private LayerMask _wallsMask;
 
 
     private PlaceableItem _targetedItem;
@@ -82,9 +86,12 @@ public class PlayerController : MonoBehaviour
 
     private void HandleItems(Transform tf)
     {
-        var item = DetectItem(tf);
+        var item = DetectItem(_itemsMask);
         if (_targetedItem && _targetedItem != item)
+        {
             _targetedItem.Untarget();
+            _targetedItem = null;
+        }
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -97,14 +104,37 @@ public class PlayerController : MonoBehaviour
                 }
 
                 _pickedItem = item;
-                _pickedItem.TryPick();
+                if (_pickedItem.TryPick())
+                {
+                    if (_targetedItem)
+                        _targetedItem = null;
+                }
             }
             else
             {
                 if (_pickedItem)
                 {
-                    _pickedItem.TryPlace();
-                    _pickedItem = null;
+                    switch (_pickedItem.Type)
+                    {
+                        case PlaceableItemType.Floor:
+                            if (RaycastFromCamera(out var hit, _floorMask, _placeDistance))
+                            {
+                                _pickedItem.TryPlace(hit.point, tf.rotation);
+                                _pickedItem = null;
+                            }
+                            break;
+
+                        case PlaceableItemType.Wall:
+                            if (RaycastFromCamera(out hit, _wallsMask, _placeDistance))
+                            {
+                                _pickedItem.TryPlace(hit.point, Quaternion.LookRotation(hit.normal));
+                                _pickedItem = null;
+                            }
+                            break;
+
+                        default:
+                            throw new ArgumentOutOfRangeException($"{_pickedItem.Type}");
+                    }
                 }
             }
         }
@@ -141,12 +171,18 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private PlaceableItem DetectItem(Transform tf)
+    private PlaceableItem DetectItem(LayerMask mask)
     {
         // TODO: non-alloc
-        if (!Physics.Raycast(_camera.position, _camera.forward, out var hit, _pickDistance, _itemsMask))
+        if (!RaycastFromCamera(out var hit, mask, _pickDistance))
             return null;
 
         return hit.transform.GetComponentInParent<PlaceableItem>();
+    }
+
+    private bool RaycastFromCamera(out RaycastHit hit, LayerMask mask, float maxDistance)
+    {
+        // TODO: non-alloc
+        return Physics.Raycast(_camera.position, _camera.forward, out hit, maxDistance, mask);
     }
 }

@@ -11,6 +11,7 @@ public class PlaceableItem : MonoBehaviour
         Placed    = 2,
         Targeted  = 3,
         Picked    = 4,
+        Placeable = 5,
     }
 
 
@@ -23,6 +24,7 @@ public class PlaceableItem : MonoBehaviour
     [SerializeField] private Material _commonMaterial;
     [SerializeField] private Material _targetedMaterial;
     [SerializeField] private Material _pickedMaterial;
+    [SerializeField] private Material _placeableMaterial;
 
     [Header(nameof(StackView))]
     [SerializeField, CanBeNull] private StackView _stack;
@@ -52,7 +54,6 @@ public class PlaceableItem : MonoBehaviour
                 return true;
 
             case State.Targeted:
-            case State.Picked:
                 return false;
 
             default:
@@ -64,15 +65,13 @@ public class PlaceableItem : MonoBehaviour
     {
         switch (_state)
         {
-            case State.Undefined:
-
             case State.Targeted:
                 _renderer.material = _commonMaterial;
                 _state = State.Placed;
                 return true;
 
-            case State.Placed:
             case State.Picked:
+            case State.Placeable:
                 return false;
 
             default:
@@ -96,10 +95,6 @@ public class PlaceableItem : MonoBehaviour
                 _state = State.Picked;
                 return true;
 
-            case State.Placed:
-            case State.Picked:
-                return false;
-
             default:
                 throw new ArgumentOutOfRangeException($"{_state}");
         }
@@ -112,19 +107,43 @@ public class PlaceableItem : MonoBehaviour
         tf.rotation = rotation;
     }
 
+    public bool SetPlaceable(bool placeable)
+    {
+        if (placeable)
+        {
+            switch (_state)
+            {
+                case State.Picked:
+                    _renderer.material = _placeableMaterial;
+                    _state = State.Placeable;
+                    return true;
+
+                default:
+                    throw new ArgumentOutOfRangeException($"{_state}");
+            }
+        }
+        else
+        {
+            switch (_state)
+            {
+                case State.Placeable:
+                    _renderer.material = _pickedMaterial;
+                    _state = State.Picked;
+                    return true;
+
+                default:
+                    throw new ArgumentOutOfRangeException($"{_state}");
+            }
+        }
+    }
+
     public bool TryPlace(Vector3? position = null, Quaternion? rotation = null)
     {
         switch (_state)
         {
-            case State.Undefined:
-                throw new NotSupportedException($"{_state}");
-
-            case State.Picked:
+            case State.Placeable:
                 Place(position ?? _positionCache, rotation ?? _rotationCache);
                 return true;
-
-            case State.Placed:
-                return false;
 
             default:
                 throw new ArgumentOutOfRangeException($"{_state}");
@@ -135,15 +154,10 @@ public class PlaceableItem : MonoBehaviour
     {
         switch (_state)
         {
-            case State.Undefined:
-                throw new NotSupportedException($"{_state}");
-
             case State.Picked:
+            case State.Placeable:
                 Place(_positionCache, _rotationCache);
                 return true;
-
-            case State.Placed:
-                return false;
 
             default:
                 throw new ArgumentOutOfRangeException($"{_state}");
