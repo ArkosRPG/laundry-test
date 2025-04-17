@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _placeDistance = 5f;
     [SerializeField] private LayerMask _floorMask;
     [SerializeField] private LayerMask _wallsMask;
+    [SerializeField] private LayerMask _allLayersMask;
 
 
     private PlaceableItem _targetedItem;
@@ -123,7 +124,7 @@ public class PlayerController : MonoBehaviour
                 return;
             }
 
-            var item = DetectItem(_itemsMask);
+            var item = DetectItem();
             if (!item)
                 return;
 
@@ -161,7 +162,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            var item = DetectItem(_itemsMask);
+            var item = DetectItem();
             if (_targetedItem != item)
             {
                 if (_targetedItem)
@@ -173,16 +174,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private PlaceableItem DetectItem(LayerMask mask)
+    private PlaceableItem DetectItem()
     {
-        return RaycastFromCamera(out var hit, mask, _pickDistance)
+        return RaycastFromCamera(out var hit, _itemsMask, _pickDistance)
             ? hit.transform.GetComponentInParent<PlaceableItem>()
             : null;
     }
 
-    private bool RaycastFromCamera(out RaycastHit hit, LayerMask mask, float maxDistance)
+    private bool RaycastFromCamera(out RaycastHit hit, LayerMask targetLayer, float maxDistance)
     {
         // TODO: non-alloc
-        return Physics.Raycast(_camera.position, _camera.forward, out hit, maxDistance, mask);
+        return Physics.Raycast(_camera.position, _camera.forward, out hit, maxDistance, _allLayersMask)
+               && 1 << hit.transform.gameObject.layer == targetLayer;
     }
 }

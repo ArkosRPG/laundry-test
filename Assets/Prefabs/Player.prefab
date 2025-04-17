@@ -63,6 +63,9 @@ MonoBehaviour:
   _wallsMask:
     serializedVersion: 2
     m_Bits: 512
+  _allLayersMask:
+    serializedVersion: 2
+    m_Bits: 896
 --- !u!195 &2389877006327781415
 NavMeshAgent:
   m_ObjectHideFlags: 0
