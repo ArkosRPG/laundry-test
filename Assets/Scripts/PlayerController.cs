@@ -184,6 +184,17 @@ public class PlayerController : MonoBehaviour
                     default: throw new ArgumentOutOfRangeException($"{_pickedItem.Type}");
                 }
             }
+            else
+            {
+                var itemScale = _pickedItem.ModelScale;
+                var position = _pickedItem.Type switch
+                {
+                    PlacementType.Walls => _camera.position,
+                    PlacementType.Floor => tf.position,
+                                      _ => tf.position
+                };
+                _pickedItem.MoveTo(position + tf.forward * (2 + itemScale.z / 2f), tf.rotation);
+            }
         }
         else
         {
