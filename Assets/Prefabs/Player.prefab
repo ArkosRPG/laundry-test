@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _camera: {fileID: 2633403205554459352}
-  _cameraXMaxUp: 30
+  _cameraXMaxUp: 60
   _cameraXMaxDown: 60
   _speed: 5
   _sprint: 12

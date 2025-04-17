@@ -5,7 +5,7 @@ public class PlayerController : MonoBehaviour
     [Header(nameof(CameraControls))]
     [SerializeField] private Transform _camera;
     [Range(0, 90)]
-    [SerializeField] private int _cameraXMaxUp = 30;
+    [SerializeField] private int _cameraXMaxUp = 60;
     [Range(0, 90)]
     [SerializeField] private int _cameraXMaxDown = 60;
 
@@ -118,7 +118,13 @@ public class PlayerController : MonoBehaviour
             if (_currentItem)
             {
                 var itemScale = _currentItem.ModelScale;
-                _currentItem.MoveTo(tf.position + tf.forward * (1 + itemScale.z / 2f), tf.rotation);
+                var position = _currentItem.Type switch
+                {
+                    PlaceableItemType.Wall  => _camera.position,
+                    PlaceableItemType.Floor => tf.position,
+                                          _ => tf.position
+                };
+                _currentItem.MoveTo(position + tf.forward * (1 + itemScale.z / 2f), tf.rotation);
             }
         }
     }
@@ -126,9 +132,9 @@ public class PlayerController : MonoBehaviour
     private PlaceableItem DetectItem(Transform tf)
     {
         // TODO: non-alloc
-        if (!Physics.Raycast(tf.position, tf.forward, out var hit, _pickDistance, _itemsMask))
+        if (!Physics.Raycast(_camera.position, _camera.forward, out var hit, _pickDistance, _itemsMask))
             return null;
 
-        return hit.transform.parent.GetComponent<PlaceableItem>();
+        return hit.transform.GetComponentInParent<PlaceableItem>();
     }
 }
