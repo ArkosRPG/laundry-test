@@ -167,10 +167,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 7488996542131025474, guid: aa387e1b958314b459c5010e721dc301, type: 3}
-      propertyPath: m_NavMeshData
-      value: 
-      objectReference: {fileID: 23800000, guid: 7e8298358d5c8094da2d817449bdcad0, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -423,10 +419,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7488996542131025474, guid: aa387e1b958314b459c5010e721dc301, type: 3}
-      propertyPath: m_NavMeshData
-      value: 
-      objectReference: {fileID: 23800000, guid: 7e8298358d5c8094da2d817449bdcad0, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1269,10 +1261,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Room (1)
       objectReference: {fileID: 0}
-    - target: {fileID: 7488996542131025474, guid: aa387e1b958314b459c5010e721dc301, type: 3}
-      propertyPath: m_NavMeshData
-      value: 
-      objectReference: {fileID: 23800000, guid: bcc8411336053f14592532a3d99dde6c, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

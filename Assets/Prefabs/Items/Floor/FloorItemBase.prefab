@@ -106,6 +106,7 @@ MonoBehaviour:
   _commonMaterial: {fileID: 2100000, guid: c0335229da05e164aa50c0022704c64d, type: 2}
   _targetedMaterial: {fileID: 2100000, guid: 00c1dff11773ae04cb8f2ba212e89be5, type: 2}
   _pickedMaterial: {fileID: 2100000, guid: 750a028d58656c54eb70c057b7244cac, type: 2}
+  _placeableMaterial: {fileID: 2100000, guid: 7c86653f53494474aab4ca1a4dfe3f18, type: 2}
   _stack: {fileID: 7997977962876274134}
   _model: {fileID: 6229476808555184764}
 --- !u!114 &7997977962876274134
@@ -120,6 +121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26af65151b37134408cb82c3511c7503, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _type: 1
   _collider: {fileID: 4593489004965268089}
   _model: {fileID: 5629303835617296289}
 --- !u!1 &5505472436085800483

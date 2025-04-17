@@ -15,7 +15,7 @@ public class PlaceableItem : MonoBehaviour
     }
 
 
-    [SerializeField] private PlaceableItemType _type;
+    [SerializeField] private PlacementType _type;
 
     [SerializeField] private Collider _collider;
 
@@ -38,7 +38,7 @@ public class PlaceableItem : MonoBehaviour
     private Quaternion _rotationCache;
 
 
-    public PlaceableItemType Type => _type;
+    public PlacementType Type => _type;
     public Vector3 ModelScale => _model.lossyScale;
 
 
@@ -93,6 +93,10 @@ public class PlaceableItem : MonoBehaviour
                 _rotationCache = tf.rotation;
 
                 _state = State.Picked;
+
+                StackView.Show(_type);
+                if (_stack)
+                    _stack.Hide();
                 return true;
 
             default:
@@ -183,5 +187,7 @@ public class PlaceableItem : MonoBehaviour
         MoveTo(position, rotation);
 
         _state = State.Placed;
+
+        StackView.HideAll();
     }
 }

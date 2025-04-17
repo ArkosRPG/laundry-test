@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26af65151b37134408cb82c3511c7503, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _type: 1
   _collider: {fileID: 4711254851143321646}
   _model: {fileID: 7815633412056180146}
 --- !u!1 &7285735706381874911

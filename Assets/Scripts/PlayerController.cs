@@ -99,8 +99,8 @@ public class PlayerController : MonoBehaviour
         {
             placeable = _pickedItem.Type switch
             {
-                PlaceableItemType.Floor => RaycastFromCamera(out placeHit, _floorMask, _placeDistance),
-                PlaceableItemType.Wall  => RaycastFromCamera(out placeHit, _wallsMask, _placeDistance),
+                PlacementType.Floor => RaycastFromCamera(out placeHit, _floorMask, _placeDistance),
+                PlacementType.Wall  => RaycastFromCamera(out placeHit, _wallsMask, _placeDistance),
                 _ => throw new ArgumentOutOfRangeException($"{_pickedItem.Type}")
             };
             _pickedItem.SetPlaceable(placeable);
@@ -129,7 +129,7 @@ public class PlayerController : MonoBehaviour
                 {
                     switch (_pickedItem.Type)
                     {
-                        case PlaceableItemType.Floor:
+                        case PlacementType.Floor:
                             if (placeable)
                             {
                                 _pickedItem.TryPlace(placeHit.point, tf.rotation);
@@ -137,7 +137,7 @@ public class PlayerController : MonoBehaviour
                             }
                             break;
 
-                        case PlaceableItemType.Wall:
+                        case PlacementType.Wall:
                             if (placeable)
                             {
                                 _pickedItem.TryPlace(placeHit.point, Quaternion.LookRotation(placeHit.normal));
@@ -167,8 +167,8 @@ public class PlayerController : MonoBehaviour
                 var itemScale = _pickedItem.ModelScale;
                 var position = _pickedItem.Type switch
                 {
-                    PlaceableItemType.Wall  => _camera.position,
-                    PlaceableItemType.Floor => tf.position,
+                    PlacementType.Wall  => _camera.position,
+                    PlacementType.Floor => tf.position,
                                           _ => tf.position
                 };
                 _pickedItem.MoveTo(position + tf.forward * (1 + itemScale.z / 2f), tf.rotation);

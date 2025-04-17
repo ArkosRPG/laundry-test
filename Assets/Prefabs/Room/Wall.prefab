@@ -295,5 +295,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26af65151b37134408cb82c3511c7503, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _type: 2
   _collider: {fileID: 4593134403174312719}
   _model: {fileID: 1344640160111199891}

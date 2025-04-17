@@ -51,6 +51,7 @@ MonoBehaviour:
   _commonMaterial: {fileID: 2100000, guid: c0335229da05e164aa50c0022704c64d, type: 2}
   _targetedMaterial: {fileID: 2100000, guid: 00c1dff11773ae04cb8f2ba212e89be5, type: 2}
   _pickedMaterial: {fileID: 2100000, guid: 750a028d58656c54eb70c057b7244cac, type: 2}
+  _placeableMaterial: {fileID: 2100000, guid: 7c86653f53494474aab4ca1a4dfe3f18, type: 2}
   _stack: {fileID: 0}
   _model: {fileID: 6229476808555184764}
 --- !u!1 &3645677781158850802
