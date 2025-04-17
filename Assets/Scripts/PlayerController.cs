@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
     [Min(1)]
     [SerializeField] private float _pickDistance = 5f;
     [SerializeField] private LayerMask _itemsMask;
-    [SerializeField] private float _placeDistance = 10f;
+    [SerializeField] private float _placeDistance = 5f;
     [SerializeField] private LayerMask _floorMask;
     [SerializeField] private LayerMask _wallsMask;
 
@@ -86,72 +86,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleItems(Transform tf)
     {
-        var item = DetectItem(_itemsMask);
-        if (_targetedItem && _targetedItem != item)
-        {
-            _targetedItem.Untarget();
-            _targetedItem = null;
-        }
-
-        RaycastHit placeHit = default;
-        var placeable = false;
-        if (_pickedItem)
-        {
-            placeable = _pickedItem.Type switch
-            {
-                PlacementType.Floor => RaycastFromCamera(out placeHit, _floorMask, _placeDistance),
-                PlacementType.Wall  => RaycastFromCamera(out placeHit, _wallsMask, _placeDistance),
-                _ => throw new ArgumentOutOfRangeException($"{_pickedItem.Type}")
-            };
-            _pickedItem.SetPlaceable(placeable);
-        }
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (item)
-            {
-                if (_pickedItem)
-                {
-                    _pickedItem.Unpick();
-                    _pickedItem = null;
-                }
-
-                _pickedItem = item;
-                if (_pickedItem.TryPick())
-                {
-                    if (_targetedItem)
-                        _targetedItem = null;
-                }
-            }
-            else
-            {
-                if (_pickedItem)
-                {
-                    switch (_pickedItem.Type)
-                    {
-                        case PlacementType.Floor:
-                            if (placeable)
-                            {
-                                _pickedItem.TryPlace(placeHit.point, tf.rotation);
-                                _pickedItem = null;
-                            }
-                            break;
-
-                        case PlacementType.Wall:
-                            if (placeable)
-                            {
-                                _pickedItem.TryPlace(placeHit.point, Quaternion.LookRotation(placeHit.normal));
-                                _pickedItem = null;
-                            }
-                            break;
-
-                        default:
-                            throw new ArgumentOutOfRangeException($"{_pickedItem.Type}");
-                    }
-                }
-            }
-        }
-        else
+        // RMB
         if (Input.GetMouseButtonDown(1))
         {
             if (_pickedItem)
@@ -159,38 +94,90 @@ public class PlayerController : MonoBehaviour
                 _pickedItem.Unpick();
                 _pickedItem = null;
             }
+            return;
         }
-        else
+
+        // LMB
+        if (Input.GetMouseButtonDown(0))
         {
             if (_pickedItem)
             {
-                var itemScale = _pickedItem.ModelScale;
-                var position = _pickedItem.Type switch
+                RaycastHit placeHit;
+                var placeable = _pickedItem.Type switch
                 {
-                    PlacementType.Wall  => _camera.position,
-                    PlacementType.Floor => tf.position,
-                                          _ => tf.position
+                    PlacementType.Floor => RaycastFromCamera(out placeHit, _floorMask, _placeDistance),
+                    PlacementType.Walls => RaycastFromCamera(out placeHit, _wallsMask, _placeDistance),
+                    _ => throw new ArgumentOutOfRangeException($"{_pickedItem.Type}")
                 };
-                _pickedItem.MoveTo(position + tf.forward * (1 + itemScale.z / 2f), tf.rotation);
-            }
-            else
-            {
-                if (item)
+                _pickedItem.SetPlaceable(placeable);
+                if (placeable)
                 {
-                    _targetedItem = item;
-                    _targetedItem.Target();
+                    switch (_pickedItem.Type)
+                    {
+                        case PlacementType.Floor: _pickedItem.TryPlace(placeHit.point, tf.rotation); break;
+                        case PlacementType.Walls: _pickedItem.TryPlace(placeHit.point, Quaternion.LookRotation(placeHit.normal)); break;
+                        default: throw new ArgumentOutOfRangeException($"{_pickedItem.Type}");
+                    }
+                    _pickedItem = null;
                 }
+                return;
+            }
+
+            var item = DetectItem(_itemsMask);
+            if (!item)
+                return;
+
+            if (_targetedItem && _targetedItem != item)
+            {
+                _targetedItem.Untarget();
+                _targetedItem = null;
+            }
+
+            if (item.TryPick())
+                _pickedItem = item;
+            return;
+        }
+
+        // no mouse buttons pressed
+        if (_pickedItem)
+        {
+            RaycastHit hit;
+            var placeable = _pickedItem.Type switch
+            {
+                PlacementType.Floor => RaycastFromCamera(out hit, _floorMask, _placeDistance),
+                PlacementType.Walls => RaycastFromCamera(out hit, _wallsMask, _placeDistance),
+                _ => throw new ArgumentOutOfRangeException($"{_pickedItem.Type}")
+            };
+            _pickedItem.SetPlaceable(placeable);
+            if (placeable)
+            {
+                switch (_pickedItem.Type)
+                {
+                    case PlacementType.Floor: _pickedItem.MoveTo(hit.point, tf.rotation); break;
+                    case PlacementType.Walls: _pickedItem.MoveTo(hit.point, Quaternion.LookRotation(hit.normal)); break;
+                    default: throw new ArgumentOutOfRangeException($"{_pickedItem.Type}");
+                }
+            }
+        }
+        else
+        {
+            var item = DetectItem(_itemsMask);
+            if (_targetedItem != item)
+            {
+                if (_targetedItem)
+                    _targetedItem.Untarget();
+                _targetedItem = item;
+                if (_targetedItem)
+                    _targetedItem.Target();
             }
         }
     }
 
     private PlaceableItem DetectItem(LayerMask mask)
     {
-        // TODO: non-alloc
-        if (!RaycastFromCamera(out var hit, mask, _pickDistance))
-            return null;
-
-        return hit.transform.GetComponentInParent<PlaceableItem>();
+        return RaycastFromCamera(out var hit, mask, _pickDistance)
+            ? hit.transform.GetComponentInParent<PlaceableItem>()
+            : null;
     }
 
     private bool RaycastFromCamera(out RaycastHit hit, LayerMask mask, float maxDistance)

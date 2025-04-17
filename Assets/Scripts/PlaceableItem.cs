@@ -70,6 +70,7 @@ public class PlaceableItem : MonoBehaviour
                 _state = State.Placed;
                 return true;
 
+            case State.Placed:
             case State.Picked:
             case State.Placeable:
                 return false;
@@ -98,6 +99,9 @@ public class PlaceableItem : MonoBehaviour
                 if (_stack)
                     _stack.Hide();
                 return true;
+
+            case State.Placed:
+                return false;
 
             default:
                 throw new ArgumentOutOfRangeException($"{_state}");
