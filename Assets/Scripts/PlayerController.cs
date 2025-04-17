@@ -17,11 +17,12 @@ public class PlayerController : MonoBehaviour
 
     [Header("Items")]
     [Min(1)]
-    [SerializeField] private float _pickDistance = 2f;
+    [SerializeField] private float _pickDistance = 5f;
     [SerializeField] private LayerMask _itemsMask;
 
 
-    private PlaceableItem _currentItem;
+    private PlaceableItem _targetedItem;
+    private PlaceableItem _pickedItem;
 
 
     private void Start()
@@ -81,50 +82,61 @@ public class PlayerController : MonoBehaviour
 
     private void HandleItems(Transform tf)
     {
+        var item = DetectItem(tf);
+        if (_targetedItem && _targetedItem != item)
+            _targetedItem.Untarget();
+
         if (Input.GetMouseButtonDown(0))
         {
-            var item = DetectItem(tf);
             if (item)
             {
-                if (_currentItem)
+                if (_pickedItem)
                 {
-                    _currentItem.Unpick();
-                    _currentItem = null;
+                    _pickedItem.Unpick();
+                    _pickedItem = null;
                 }
 
-                _currentItem = item;
-                _currentItem.TryPick();
+                _pickedItem = item;
+                _pickedItem.TryPick();
             }
             else
             {
-                if (_currentItem)
+                if (_pickedItem)
                 {
-                    _currentItem.TryPlace();
-                    _currentItem = null;
+                    _pickedItem.TryPlace();
+                    _pickedItem = null;
                 }
             }
         }
         else
         if (Input.GetMouseButtonDown(1))
         {
-            if (_currentItem)
+            if (_pickedItem)
             {
-                _currentItem.Unpick();
-                _currentItem = null;
+                _pickedItem.Unpick();
+                _pickedItem = null;
             }
         }
         else
         {
-            if (_currentItem)
+            if (_pickedItem)
             {
-                var itemScale = _currentItem.ModelScale;
-                var position = _currentItem.Type switch
+                var itemScale = _pickedItem.ModelScale;
+                var position = _pickedItem.Type switch
                 {
                     PlaceableItemType.Wall  => _camera.position,
                     PlaceableItemType.Floor => tf.position,
                                           _ => tf.position
                 };
-                _currentItem.MoveTo(position + tf.forward * (1 + itemScale.z / 2f), tf.rotation);
+                _pickedItem.MoveTo(position + tf.forward * (1 + itemScale.z / 2f), tf.rotation);
+            }
+            else
+            {
+                if (item)
+                {
+                    _targetedItem = item;
+                    _targetedItem.Target();
+                }
             }
         }
     }

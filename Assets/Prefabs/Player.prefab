@@ -52,7 +52,7 @@ MonoBehaviour:
   _cameraXMaxDown: 60
   _speed: 5
   _sprint: 12
-  _pickDistance: 2
+  _pickDistance: 5
   _itemsMask:
     serializedVersion: 2
     m_Bits: 128

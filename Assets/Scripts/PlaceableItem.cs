@@ -9,7 +9,8 @@ public class PlaceableItem : MonoBehaviour
     {
         Undefined = 1,
         Placed    = 2,
-        Picked    = 3,
+        Targeted  = 3,
+        Picked    = 4,
     }
 
 
@@ -20,6 +21,7 @@ public class PlaceableItem : MonoBehaviour
     [Header(nameof(Material))]
     [SerializeField] private Renderer _renderer;
     [SerializeField] private Material _commonMaterial;
+    [SerializeField] private Material _targetedMaterial;
     [SerializeField] private Material _pickedMaterial;
 
     [Header(nameof(StackView))]
@@ -38,13 +40,51 @@ public class PlaceableItem : MonoBehaviour
     public Vector3 ModelScale => _model.lossyScale;
 
 
-    public bool TryPick()
+    public bool Target()
     {
         switch (_state)
         {
             case State.Undefined:
 
             case State.Placed:
+                _renderer.material = _targetedMaterial;
+                _state = State.Targeted;
+                return true;
+
+            case State.Targeted:
+            case State.Picked:
+                return false;
+
+            default:
+                throw new ArgumentOutOfRangeException($"{_state}");
+        }
+    }
+
+    public bool Untarget()
+    {
+        switch (_state)
+        {
+            case State.Undefined:
+
+            case State.Targeted:
+                _renderer.material = _commonMaterial;
+                _state = State.Placed;
+                return true;
+
+            case State.Placed:
+            case State.Picked:
+                return false;
+
+            default:
+                throw new ArgumentOutOfRangeException($"{_state}");
+        }
+    }
+
+    public bool TryPick()
+    {
+        switch (_state)
+        {
+            case State.Targeted:
                 _renderer.material = _pickedMaterial;
                 _renderer.shadowCastingMode = ShadowCastingMode.Off;
                 _collider.enabled = false;
@@ -56,11 +96,12 @@ public class PlaceableItem : MonoBehaviour
                 _state = State.Picked;
                 return true;
 
+            case State.Placed:
             case State.Picked:
                 return false;
 
             default:
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException($"{_state}");
         }
     }
 
@@ -76,7 +117,7 @@ public class PlaceableItem : MonoBehaviour
         switch (_state)
         {
             case State.Undefined:
-                throw new NotSupportedException(nameof(State.Undefined));
+                throw new NotSupportedException($"{_state}");
 
             case State.Picked:
                 Place(position ?? _positionCache, rotation ?? _rotationCache);
@@ -86,7 +127,7 @@ public class PlaceableItem : MonoBehaviour
                 return false;
 
             default:
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException($"{_state}");
         }
     }
 
@@ -95,7 +136,7 @@ public class PlaceableItem : MonoBehaviour
         switch (_state)
         {
             case State.Undefined:
-                throw new NotSupportedException(nameof(State.Undefined));
+                throw new NotSupportedException($"{_state}");
 
             case State.Picked:
                 Place(_positionCache, _rotationCache);
@@ -105,7 +146,7 @@ public class PlaceableItem : MonoBehaviour
                 return false;
 
             default:
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException($"{_state}");
         }
     }
 
