@@ -93,6 +93,19 @@ public class PlayerController : MonoBehaviour
             _targetedItem = null;
         }
 
+        RaycastHit placeHit = default;
+        var placeable = false;
+        if (_pickedItem)
+        {
+            placeable = _pickedItem.Type switch
+            {
+                PlaceableItemType.Floor => RaycastFromCamera(out placeHit, _floorMask, _placeDistance),
+                PlaceableItemType.Wall  => RaycastFromCamera(out placeHit, _wallsMask, _placeDistance),
+                _ => throw new ArgumentOutOfRangeException($"{_pickedItem.Type}")
+            };
+            _pickedItem.SetPlaceable(placeable);
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             if (item)
@@ -117,17 +130,17 @@ public class PlayerController : MonoBehaviour
                     switch (_pickedItem.Type)
                     {
                         case PlaceableItemType.Floor:
-                            if (RaycastFromCamera(out var hit, _floorMask, _placeDistance))
+                            if (placeable)
                             {
-                                _pickedItem.TryPlace(hit.point, tf.rotation);
+                                _pickedItem.TryPlace(placeHit.point, tf.rotation);
                                 _pickedItem = null;
                             }
                             break;
 
                         case PlaceableItemType.Wall:
-                            if (RaycastFromCamera(out hit, _wallsMask, _placeDistance))
+                            if (placeable)
                             {
-                                _pickedItem.TryPlace(hit.point, Quaternion.LookRotation(hit.normal));
+                                _pickedItem.TryPlace(placeHit.point, Quaternion.LookRotation(placeHit.normal));
                                 _pickedItem = null;
                             }
                             break;

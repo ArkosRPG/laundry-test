@@ -118,6 +118,9 @@ public class PlaceableItem : MonoBehaviour
                     _state = State.Placeable;
                     return true;
 
+                case State.Placeable:
+                    return false;
+
                 default:
                     throw new ArgumentOutOfRangeException($"{_state}");
             }
@@ -131,18 +134,24 @@ public class PlaceableItem : MonoBehaviour
                     _state = State.Picked;
                     return true;
 
+                case State.Picked:
+                    return false;
+
                 default:
                     throw new ArgumentOutOfRangeException($"{_state}");
             }
         }
     }
 
-    public bool TryPlace(Vector3? position = null, Quaternion? rotation = null)
+    public bool TryPlace(Vector3 position, Quaternion rotation)
     {
         switch (_state)
         {
+            case State.Picked:
+                return false;
+
             case State.Placeable:
-                Place(position ?? _positionCache, rotation ?? _rotationCache);
+                Place(position, rotation);
                 return true;
 
             default:
