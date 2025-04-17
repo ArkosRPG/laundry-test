@@ -24,15 +24,19 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask _floorMask;
     [SerializeField] private LayerMask _wallsMask;
     [SerializeField] private LayerMask _allLayersMask;
+    [SerializeField] private int _rotationAngle = 45;
 
 
     private PlaceableItem _targetedItem;
     private PlaceableItem _pickedItem;
+    private int _rotationLimit;
+    private int _rotation;
 
 
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        _rotationLimit = 180 / _rotationAngle + (180 % _rotationAngle > 0 ? 1 : 0);
     }
 
     private void Update()
@@ -115,10 +119,17 @@ public class PlayerController : MonoBehaviour
                 {
                     switch (_pickedItem.Type)
                     {
-                        case PlacementType.Floor: _pickedItem.TryPlace(placeHit.point, tf.rotation); break;
+                        case PlacementType.Floor:
+                        {
+                            var eulers = tf.eulerAngles;
+                            _pickedItem.TryPlace(placeHit.point, Quaternion.Euler(eulers.x, eulers.y + _rotation * 45f, eulers.z));
+                            break;
+                        }
                         case PlacementType.Walls: _pickedItem.TryPlace(placeHit.point, Quaternion.LookRotation(placeHit.normal)); break;
                         default: throw new ArgumentOutOfRangeException($"{_pickedItem.Type}");
                     }
+                    _targetedItem = _pickedItem;
+                    _targetedItem.Target();
                     _pickedItem = null;
                 }
                 return;
@@ -135,13 +146,22 @@ public class PlayerController : MonoBehaviour
             }
 
             if (item.TryPick())
+            {
+                _rotation = 0;
                 _pickedItem = item;
+            }
             return;
         }
 
         // no mouse buttons pressed
         if (_pickedItem)
         {
+            _rotation += (int)Input.mouseScrollDelta.y;
+            if (_rotation <= -_rotationLimit)
+                _rotation += _rotationLimit;
+            if (_rotation > _rotationLimit)
+                _rotation -= _rotationLimit;
+
             RaycastHit hit;
             var placeable = _pickedItem.Type switch
             {
@@ -154,10 +174,26 @@ public class PlayerController : MonoBehaviour
             {
                 switch (_pickedItem.Type)
                 {
-                    case PlacementType.Floor: _pickedItem.MoveTo(hit.point, tf.rotation); break;
+                    case PlacementType.Floor:
+                    {
+                        var eulers = tf.eulerAngles;
+                        _pickedItem.MoveTo(hit.point, Quaternion.Euler(eulers.x,eulers.y +_rotation * 45f,eulers.z));
+                        break;
+                    }
                     case PlacementType.Walls: _pickedItem.MoveTo(hit.point, Quaternion.LookRotation(hit.normal)); break;
                     default: throw new ArgumentOutOfRangeException($"{_pickedItem.Type}");
                 }
+            }
+            else
+            {
+                var itemScale = _pickedItem.ModelScale;
+                var position = _pickedItem.Type switch
+                {
+                    PlacementType.Walls => _camera.position,
+                    PlacementType.Floor => tf.position,
+                                      _ => tf.position
+                };
+                _pickedItem.MoveTo(position + tf.forward * (2 + itemScale.z / 2f), tf.rotation);
             }
         }
         else
