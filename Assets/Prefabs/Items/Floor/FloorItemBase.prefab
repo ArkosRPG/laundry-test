@@ -66,7 +66,7 @@ GameObject:
   - component: {fileID: -2089499265428769156}
   - component: {fileID: 7997977962876274134}
   m_Layer: 7
-  m_Name: ItemBase
+  m_Name: FloorItemBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -100,6 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87e2301912919cf479abfe52a24d13be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _type: 1
   _collider: {fileID: 1343025657456947862}
   _renderer: {fileID: 7639900917825710838}
   _commonMaterial: {fileID: 2100000, guid: c0335229da05e164aa50c0022704c64d, type: 2}

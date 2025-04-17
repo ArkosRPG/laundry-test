@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2344782891496491679, guid: d69d502a21f650f4084627cb707e3ddf, type: 3}
       propertyPath: m_Name
-      value: OneItem Variant
+      value: OneItem
       objectReference: {fileID: 0}
     - target: {fileID: 2559059217438982388, guid: d69d502a21f650f4084627cb707e3ddf, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

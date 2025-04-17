@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -12,7 +13,8 @@ public class PlaceableItem : MonoBehaviour
     }
 
 
-    [Header(nameof(Collider))]
+    [SerializeField] private PlaceableItemType _type;
+
     [SerializeField] private Collider _collider;
 
     [Header(nameof(Material))]
@@ -21,7 +23,7 @@ public class PlaceableItem : MonoBehaviour
     [SerializeField] private Material _pickedMaterial;
 
     [Header(nameof(StackView))]
-    [SerializeField] private StackView _stack;
+    [SerializeField, CanBeNull] private StackView _stack;
 
     [Header("Model")]
     [SerializeField] private Transform _model;
@@ -32,6 +34,7 @@ public class PlaceableItem : MonoBehaviour
     private Quaternion _rotationCache;
 
 
+    public PlaceableItemType Type => _type;
     public Vector3 ModelScale => _model.lossyScale;
 
 
